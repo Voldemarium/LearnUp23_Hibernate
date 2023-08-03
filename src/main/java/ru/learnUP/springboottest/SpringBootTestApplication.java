@@ -9,15 +9,9 @@ import ru.learnUP.springboottest.dao.entity.Comment;
 import ru.learnUP.springboottest.dao.entity.Post;
 import ru.learnUP.springboottest.dao.post.PostDao;
 
+import java.io.Serializable;
 import java.util.List;
-//import ru.learnUP.springboottest.service.Calculator;
-//import ru.learnUP.springboottest.service.Operation;
-//import ru.learnUP.springboottest.service.ValueService;
 
-
-//Создание Spring Boot приложений удобнее через Spring initializr
-//https://start.spring.io/index.html, а не путем импортирования зависимостей
-//Нет необходимости в XML-конфигурации
 @SpringBootApplication
 public class SpringBootTestApplication {
 
@@ -26,28 +20,46 @@ public class SpringBootTestApplication {
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(SpringBootTestApplication.class, args);
 
-//		Calculator calculator = context.getBean(Calculator.class);
-//		log.info("{} + {} = {}", 1, 2, calculator.calculate(2, 2, Operation.MINUS));
-//		context.getBean(ValueService.class).print();
-
 //		Использование базы данных SQL
 		PostDao postDao = context.getBean(PostDao.class);
 
-		Comment comment = new Comment();
-		comment.setText("Comment text");
+//		Удаление всех постов (одновременно удаляются зависимые дочерние Entity Comment)
+		List<Post> posts1 = postDao.getPosts();
+     	log.info("{}", posts1);
+//		for (Post post : posts1) {
+//			postDao.deletePost(post);
+//		}
+//
+//		Post post = new Post();
+//		post.setText("Post1 text");
+//		post.setTitle("Post1 title");
+//
+//		Comment comment1 = new Comment();
+//		comment1.setText("Comment1_1 text");
+//		Comment comment2 = new Comment();
+//		comment2.setText("Comment1_2 text");
+//
+//		comment1.setPost(post);
+//		comment2.setPost(post);
+//		post.setComments(List.of(comment1, comment2));
+//
+////		Сохранение в базу Entity "Post post" (одновременно сохраняются зависимые дочерние объекты Comment
+//		Serializable id = postDao.createPost(post);
+//		log.info("{}", id);
 
-		Post post = new Post();
-		post.setText("Post text");
-		post.setTitle("Post title");
 
-		comment.setPost(post);
-		post.setComments(List.of(comment));
+//		List<Post> posts2 = postDao.getPosts();
+//		log.info("{}", posts2);
 
-		postDao.createPost(post);
-
-		List<Post> posts = postDao.getPosts();
-		log.info("{}", posts);
+//       postDao.createDDL("ALTER TABLE comment DROP CONSTRAINT comment_post_id_title_fkey1");
+//        postDao.createDDL("ALTER TABLE comment ADD FOREIGN KEY (post_id, title) " +
+//                "                              REFERENCES post (id, title) ON UPDATE CASCADE");
+//
+//
+		Post postsUpdate = posts1.get(0);
+		postsUpdate.setTitle("title update4");
+//		postsUpdate.setText("text update5");
+		postDao.updatePost(postsUpdate);
 
 	}
-
 }
